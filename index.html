@@ -14,9 +14,27 @@
         <link rel="stylesheet" href="./styles/index.css" />
     </head>
     <body>
-        <div class="container text-center contenedor">
-            <div class="row row-cols-4" id="tablero">
+        <div class="container text-center">
+            <div class="row">
+                <div class="col-8 alert alert-primary" role="alert" id="alerta">
+                    Presiona "Comenzar" para jugar
+                </div>
+                <div class="col-2 text-bg-light p-3 h-100">
+                    <p>Intentos: <strong id="contador">0</strong></p>
+                </div>
+                <div class="col-2">
+                    <button
+                        id="comenzar"
+                        type="button"
+                        class="btn btn-primary btn-lg"
+                    >
+                        Comenzar
+                    </button>
+                </div>
             </div>
+        </div>
+        <div class="container text-center contenedor">
+            <div class="row row-cols-4" id="tablero"></div>
         </div>
 
         <script src="./src/logica.js"></script>
