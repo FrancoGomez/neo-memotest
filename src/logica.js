@@ -18,7 +18,7 @@ let coloresCartas = [
     "#ba00ff",
     "#feb300",
 ];
-let cartaGuardada = "";
+let $cartaGuardada = "";
 let pares = coloresCartas.length / 2;
 let intentos = 0;
 
@@ -28,20 +28,20 @@ const iniciarJuego = () => {
 };
 
 const manejarClick = (e) => {
-    const cartaClickeada = e.target;
+    const $cartaClickeada = e.target;
 
-    if (cartaClickeada.style.backgroundColor === "") {
+    if ($cartaClickeada.style.backgroundColor === "") {
         return;
     }
 
-    revelarColorCarta(cartaClickeada, obtenerColorCarta(cartaClickeada.id));
+    revelarColorCarta($cartaClickeada, obtenerColorCarta($cartaClickeada.id));
     bloquearInput();
 
     setTimeout(() => {
-        if (cartaGuardada === "") {
-            cartaGuardada = cartaClickeada;
+        if ($cartaGuardada === "") {
+            $cartaGuardada = $cartaClickeada;
         } else {
-            manejarCartasElegidas(cartaClickeada);
+            manejarCartasElegidas($cartaClickeada);
             chequearEstadoJuego();
         }
         desbloquearInput();
@@ -60,21 +60,21 @@ const desbloquearInput = () => {
     $tablero.onclick = (e) => manejarClick(e);
 };
 
-const manejarCartasElegidas = (cartaClickeada) => {
-    if (cartaGuardada.id !== cartaClickeada.id) {
-        const colorCartaGuardada = obtenerColorCarta(cartaGuardada.id);
-        const colorCartaClickeada = obtenerColorCarta(cartaClickeada.id);
+const manejarCartasElegidas = ($cartaClickeada) => {
+    if ($cartaGuardada.id !== $cartaClickeada.id) {
+        const color$CartaGuardada = obtenerColorCarta($cartaGuardada.id);
+        const color$CartaClickeada = obtenerColorCarta($cartaClickeada.id);
 
-        if (colorCartaGuardada === colorCartaClickeada) {
-            cartaGuardada.style.backgroundColor = "";
-            cartaClickeada.style.backgroundColor = "";
+        if (color$CartaGuardada === color$CartaClickeada) {
+            $cartaGuardada.style.backgroundColor = "";
+            $cartaClickeada.style.backgroundColor = "";
             pares--;
         } else {
-            cartaGuardada.style.backgroundColor = "brown";
-            cartaClickeada.style.backgroundColor = "brown";
+            $cartaGuardada.style.backgroundColor = "brown";
+            $cartaClickeada.style.backgroundColor = "brown";
         }
 
-        cartaGuardada = "";
+        $cartaGuardada = "";
         actualizarIntentos();
     }
 };
@@ -99,7 +99,7 @@ const generarCartas = (cantidad) => {
     }
 };
 
-const crearCarta = (id, indice) => {
+const crearCarta = (id) => {
     const $carta = document.createElement("div");
     $carta.setAttribute("id", id);
     $carta.className = "col carta";
