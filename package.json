@@ -1,6 +1,9 @@
 {
-  "dependencies": {
-    "bootstrap": "^5.2.0",
-    "http-server": "^14.1.1"
-  }
+    "scripts": {
+        "empezar": "http-server"
+    },
+    "dependencies": {
+        "bootstrap": "^5.2.0",
+        "http-server": "^14.1.1"
+    }
 }
