@@ -1,6 +1,7 @@
 #tablero {
     width: 100%;
-    height: 100vh;
+    height: calc(100vh - 74px);
+    margin: auto;
 }
 
 #tablero .col {
