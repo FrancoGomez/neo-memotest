@@ -1,4 +1,7 @@
 const $tablero = document.querySelector("#tablero");
+const $alerta = document.querySelector("#alerta");
+const $contador = document.querySelector("#contador");
+const $comenzar = document.querySelector("#comenzar");
 
 let coloresCartas = [
     "#7308a5",
@@ -9,47 +12,56 @@ let coloresCartas = [
     "#00ff00",
     "#ba00ff",
     "#feb300",
-    "#7308a5",
-    "#0000ff",
-    "#ff7f00",
-    "#007900",
-    "#ffff00",
-    "#00ff00",
-    "#ba00ff",
-    "#feb300",
 ];
+let coloresRepetidos;
 let $cartaGuardada = "";
-let pares = coloresCartas.length / 2;
-let intentos = 0;
+let pares, intentos, tiempoJugando, intervalo;
+
+$comenzar.onclick = () => iniciarJuego();
 
 const iniciarJuego = () => {
-    generarCartas(Number(coloresCartas.length));
+    reiniciarEstado();
+    manejarRonda();
+};
+
+const reiniciarEstado = () => {
+    borrarCartas();
+    actualizarAlerta('Presiona "Comenzar" para jugar');
+    clearInterval(intervalo);
+    pares = coloresCartas.length;
+    intentos = 0;
+    tiempoJugando = 0;
+    intervalo = "";
+};
+
+const manejarRonda = () => {
+    mezclarColores();
+    generarCartas(Number(coloresRepetidos.length));
+    iniciarTemporizador();
     desbloquearInput();
 };
 
-const manejarClick = (e) => {
-    const $cartaClickeada = e.target;
-
-    if ($cartaClickeada.style.backgroundColor === "") {
-        return;
+const borrarCartas = () => {
+    const $cartas = document.querySelectorAll("#tablero .carta");
+    if ($cartas.length !== 0) {
+        $cartas.forEach((carta) => {
+            carta.remove();
+        });
     }
-
-    revelarColorCarta($cartaClickeada, obtenerColorCarta($cartaClickeada.id));
-    bloquearInput();
-
-    setTimeout(() => {
-        if ($cartaGuardada === "") {
-            $cartaGuardada = $cartaClickeada;
-        } else {
-            manejarCartasElegidas($cartaClickeada);
-            chequearEstadoJuego();
-        }
-        desbloquearInput();
-    }, 400);
 };
 
-const revelarColorCarta = ($carta, color) => {
-    $carta.style.backgroundColor = color;
+const generarCartas = (cantidad) => {
+    for (let i = 0; i < cantidad; i++) {
+        const $carta = crearCarta(`carta-${i}`, i);
+        $tablero.appendChild($carta);
+    }
+};
+
+const iniciarTemporizador = () => {
+    intervalo = setInterval(() => {
+        tiempoJugando++;
+        actualizarAlerta(`Tiempo: ${tiempoJugando} segundos`);
+    }, 1000);
 };
 
 const bloquearInput = () => {
@@ -58,6 +70,52 @@ const bloquearInput = () => {
 
 const desbloquearInput = () => {
     $tablero.onclick = (e) => manejarClick(e);
+};
+
+const actualizarAlerta = (texto) => {
+    $alerta.textContent = texto;
+};
+
+const mezclarColores = () => {
+    coloresRepetidos = coloresCartas.concat(coloresCartas);
+    const arrayAuxiliar = [];
+
+    while (coloresRepetidos.length !== 0) {
+        const numeroRandom = obtenerNumeroRandom(coloresRepetidos.length);
+        const colorRandom = coloresRepetidos.splice(numeroRandom, 1);
+        arrayAuxiliar.push(colorRandom[0]);
+    }
+
+    coloresRepetidos = [...arrayAuxiliar];
+};
+
+const obtenerNumeroRandom = (maximo) => {
+    return Math.floor(Math.random() * maximo);
+};
+
+const manejarClick = (e) => {
+    const $cartaClickeada = e.target;
+
+    if ($cartaClickeada.style.backgroundColor === "") return;
+
+    revelarColorCarta($cartaClickeada, obtenerColorCarta($cartaClickeada.id));
+
+    if ($cartaGuardada) bloquearInput();
+
+    setTimeout(() => {
+        if ($cartaGuardada === "") {
+            $cartaGuardada = $cartaClickeada;
+        } else {
+            manejarCartasElegidas($cartaClickeada);
+            chequearEstadoJuego();
+        }
+
+        desbloquearInput();
+    }, 300);
+};
+
+const revelarColorCarta = ($carta, color) => {
+    $carta.style.backgroundColor = color;
 };
 
 const manejarCartasElegidas = ($cartaClickeada) => {
@@ -81,22 +139,14 @@ const manejarCartasElegidas = ($cartaClickeada) => {
 
 const chequearEstadoJuego = () => {
     if (pares === 0) {
-        console.log("Ganaste");
+        clearInterval(intervalo);
+        actualizarAlerta(`Ganaste! Pulsa "Comenzar" para volver a jugar`);
     }
 };
 
 const actualizarIntentos = () => {
     intentos++;
-    console.log("Intentos: ", intentos);
-};
-
-const generarCartas = (cantidad) => {
-    mezclarColores();
-
-    for (let i = 0; i < cantidad; i++) {
-        const $carta = crearCarta(`carta-${i}`, i);
-        $tablero.appendChild($carta);
-    }
+    $contador.textContent = intentos;
 };
 
 const crearCarta = (id) => {
@@ -108,25 +158,7 @@ const crearCarta = (id) => {
     return $carta;
 };
 
-const mezclarColores = () => {
-    const arrayAuxiliar = [];
-
-    while (coloresCartas.length !== 0) {
-        const numeroRandom = obtenerNumeroRandom(coloresCartas.length);
-        const colorRandom = coloresCartas.splice(numeroRandom, 1);
-        arrayAuxiliar.push(colorRandom[0]);
-    }
-
-    coloresCartas = [...arrayAuxiliar];
-};
-
-const obtenerNumeroRandom = (maximo) => {
-    return Math.floor(Math.random() * maximo);
-};
-
 const obtenerColorCarta = (id) => {
     const numeroId = Number(id.replace("carta-", ""));
-    return coloresCartas[numeroId];
+    return coloresRepetidos[numeroId];
 };
-
-iniciarJuego();
