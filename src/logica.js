@@ -17,6 +17,9 @@ let coloresRepetidos;
 let $cartaGuardada = "";
 let pares, intentos, tiempoJugando, intervalo;
 
+// Variable definida para testear el juego con cypress
+window.coloresRepetidosParaCypress
+
 $comenzar.onclick = () => iniciarJuego();
 
 const iniciarJuego = () => {
@@ -36,6 +39,7 @@ const reiniciarEstado = () => {
 
 const manejarRonda = () => {
   coloresRepetidos = [...devolverColoresMezcaldos(coloresCartas)];
+  coloresRepetidosParaCypress = [...coloresRepetidos]
   generarCartas(Number(coloresRepetidos.length));
   iniciarTemporizador();
   desbloquearInput();
